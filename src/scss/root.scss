@@ -1,0 +1,18 @@
+@import './_globalIncludes';
+@import './icons.scss';
+@import './styles/styles.scss';
+
+:root {
+  --sc-primary-color: #{$sc-primary-color};
+  --sc-secondary-color: #{$sc-secondary-color};
+  --sc-background-color: #{$sc-background-color};
+  --sc-animation-speed: #{$sc-animation-speed};
+  --sc-icon-color: #{$sc-icon-color};
+  --sc-icon-color-dark: #{$sc-icon-color-dark};
+  --sc-font-color: #{$sc-font-color};
+  --sc-font-color-dark: #{$sc-font-color-dark};
+  --sc-color-border: #{$sc-color-border};
+  --sc-disabled-color: #{$sc-disabled-color};
+
+  --sc-hover-brightness: 90%;
+}

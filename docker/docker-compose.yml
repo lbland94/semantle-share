@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  semantlechart:
+    build:
+      context: ../
+      dockerfile: ./docker/node/Dockerfile
+      args:
+        PORT: ${PORT}
+    image: semantlechart
+    container_name: semantlechart
+    restart: unless-stopped
+    ports:
+      - ${PORT}:80
+    environment:
+      - PORT

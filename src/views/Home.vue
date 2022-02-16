@@ -2,8 +2,8 @@
   <div class="sc-home">
     <p class="sc-label">Copy and paste your semantle guesses into this box.</p>
     <textarea class="semantle-result" v-model="semantleResult"></textarea>
-    <div class="semantle-chart-container">
-      <LineChart
+    <!-- <div class="semantle-chart-container"> -->
+    <!-- <LineChart
         ref="chart"
         chart-id="sem-chart-id"
         class="semantle-chart"
@@ -67,23 +67,22 @@
           },
           events: [],
         }"
-      ></LineChart>
-      <div class="semantle-chart-height"></div>
-    </div>
+      ></LineChart> -->
+    <!-- <div class="semantle-chart-height"></div>
+    </div> -->
     <button class="sc-share" @click.prevent="share">
       <span class="material-icons">share</span>
     </button>
 
     <div id="to-copy">
-      <pre>{{ plot }}</pre>
-      <pre>semantle {{ semantleNumber }}, {{ lines.length }} guesses</pre>
+      <pre>{{ shareText }}</pre>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { LineChart } from 'vue-chart-3';
+// import { LineChart } from 'vue-chart-3';
 import {
   formatDate,
   largestTriangleThreeBuckets,
@@ -91,13 +90,14 @@ import {
 } from '@/utils/utils';
 import ClipboardJS from 'clipboard';
 import * as asciichart from 'asciichart';
-import { Chart, registerables } from 'chart.js';
-Chart.register(...registerables);
+import { POSITION, TYPE, useToast } from 'vue-toastification';
+// import { Chart, registerables } from 'chart.js';
+// Chart.register(...registerables);
 
 export default defineComponent({
   name: 'HomeView',
   components: {
-    LineChart,
+    // LineChart,
   },
   data: () => ({
     semantleResult: '',
@@ -106,30 +106,30 @@ export default defineComponent({
     semantleNumber: getSemantleNumber(Date.now()),
     plugin: {
       id: 'semantle_chart_background',
-      beforeDraw: (chart: Chart) => {
-        const ctx = chart.canvas.getContext('2d');
-        if (ctx) {
-          ctx.save();
-          ctx.globalCompositeOperation = 'destination-over';
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = '#aaa';
-          ctx.strokeRect(0, 0, chart.width, chart.height);
-          ctx.fillStyle = '#aaa';
-          ctx.textAlign = 'left';
-          const bgString = 'semantle ' + formatDate(Date.now());
-          ctx.font = '24px sans-serif';
-          let size = ctx.measureText(bgString);
-          let fs = 24;
-          while (size.width > chart.width / 3) {
-            ctx.font = `${--fs}px sans-serif`;
-            size = ctx.measureText(bgString);
-          }
-          ctx.fillText(bgString, 10, fs / 2 + 10);
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, chart.width, chart.height);
-          ctx.restore();
-        }
-      },
+      // beforeDraw: (chart: Chart) => {
+      //   const ctx = chart.canvas.getContext('2d');
+      //   if (ctx) {
+      //     ctx.save();
+      //     ctx.globalCompositeOperation = 'destination-over';
+      //     ctx.lineWidth = 2;
+      //     ctx.strokeStyle = '#aaa';
+      //     ctx.strokeRect(0, 0, chart.width, chart.height);
+      //     ctx.fillStyle = '#aaa';
+      //     ctx.textAlign = 'left';
+      //     const bgString = 'semantle ' + formatDate(Date.now());
+      //     ctx.font = '24px sans-serif';
+      //     let size = ctx.measureText(bgString);
+      //     let fs = 24;
+      //     while (size.width > chart.width / 3) {
+      //       ctx.font = `${--fs}px sans-serif`;
+      //       size = ctx.measureText(bgString);
+      //     }
+      //     ctx.fillText(bgString, 10, fs / 2 + 10);
+      //     ctx.fillStyle = 'white';
+      //     ctx.fillRect(0, 0, chart.width, chart.height);
+      //     ctx.restore();
+      //   }
+      // },
     },
   }),
   computed: {
@@ -190,7 +190,7 @@ export default defineComponent({
       );
     },
     shareText(): string {
-      return `${this.plot}\n\nsemantle: ${this.date}`;
+      return `${this.plot}\nsemantle ${this.semantleNumber}, ${this.lines.length} guesses`;
     },
   },
   methods: {
@@ -202,12 +202,20 @@ export default defineComponent({
       // chartParent.chartInstance.update();
       // const image = chartParent.chartInstance.toBase64Image('image/jpg', 1);
       // this.imgSrc = image;
-      // await this.$nextTick();
-      // ClipboardJS.copy(document.querySelector('#to-copy') as Element, {});
-      // await this.$nextTick();
-      // this.imgSrc = '';
       ClipboardJS.copy(document.getElementById('to-copy') as Element, {});
-      console.log(this.plot);
+      const toast = useToast();
+      toast('copied to clipboard', {
+        timeout: 1000,
+        position: POSITION.BOTTOM_CENTER,
+        draggable: false,
+        closeOnClick: false,
+        type: TYPE.INFO,
+        pauseOnHover: false,
+        toastClassName: 'sc-snackbar',
+        hideProgressBar: true,
+        icon: false,
+        closeButton: false,
+      });
     },
   },
 });
@@ -216,7 +224,7 @@ export default defineComponent({
 <style lang="scss">
 .sc-home {
   max-width: 100vw;
-  padding-bottom: 30px;
+  padding-bottom: 100px;
 
   .semantle-result {
     border: 1px solid var(--sc-color-border);
@@ -271,10 +279,18 @@ export default defineComponent({
     }
   }
   #to-copy {
-    width: 0;
-    height: 0;
-    position: absolute;
-    overflow: hidden;
+    text-align: left;
+    padding-left: 8%;
   }
+}
+.Vue-Toastification__container .Vue-Toastification__toast.sc-snackbar {
+  width: auto;
+  min-width: 0;
+  height: 30px;
+  min-height: 0;
+  background-color: var(--sc-icon-color-dark);
+  color: var(--sc-font-color);
+  margin: 0 auto 3px;
+  padding: 3px 10px;
 }
 </style>

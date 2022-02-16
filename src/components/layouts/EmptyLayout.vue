@@ -1,14 +1,5 @@
 <template>
   <div class="empty-layout">
-    <div class="test-links">
-      <router-link
-        v-for="link in availableLinks"
-        :key="link.to"
-        :to="link.to"
-        class="test-link"
-        >{{ link.label }}</router-link
-      >
-    </div>
     <slot></slot>
   </div>
 </template>
@@ -34,7 +25,6 @@ export default defineComponent({
 <style lang="scss">
 .empty-layout {
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;

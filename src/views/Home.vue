@@ -72,9 +72,19 @@
       <img v-if="imgSrc" :src="imgSrc" class="chart-image-cover" />
       <div class="semantle-chart-height"></div>
     </div>
-    <button class="sc-share" @click.prevent="share">
-      <span class="material-icons">share</span>
-    </button>
+    <div class="sc-share-container">
+      <button class="sc-share" @click.prevent="copy">
+        <span class="material-icons">content_copy</span>
+      </button>
+      <a
+        class="sc-share"
+        v-if="imgSrc"
+        :href="imgSrc"
+        :download="`semantle-${semantleNumber}.png`"
+      >
+        <span class="material-icons">download</span>
+      </a>
+    </div>
 
     <div id="to-copy">
       <pre>{{ shareText }}</pre>
@@ -212,12 +222,12 @@ export default defineComponent({
             )
             .replace(/^( +)?(\d|\.)+?\s/gm, '')
             .replace(/ +$/gm, '')
-            .replace(/ /g, ' ')) ||
+            .replace(/ /g, '⠀')) ||
         ''
       );
     },
     shareText(): string {
-      return `${this.plot}\nsemantle ${this.semantleNumber}, ${this.lines.length} guesses`;
+      return `${this.plot}\nsemantle ${this.semantleNumber}: ${this.lines.length} guesses`;
     },
     chartInstance(): Chart {
       const chartParent = this.$refs.chart as any;
@@ -225,8 +235,7 @@ export default defineComponent({
     },
   },
   methods: {
-    async share() {
-      console.log(this.plot);
+    async copy() {
       ClipboardJS.copy(document.getElementById('to-copy') as Element, {});
       const toast = useToast();
       toast('copied to clipboard', {
@@ -289,12 +298,17 @@ export default defineComponent({
     bottom: 0;
     box-sizing: border-box;
   }
-  .sc-share {
-    background: var(--sc-primary-color);
-    color: var(--sc-font-color);
+  .sc-share-container {
     position: fixed;
     bottom: 30px;
     right: 30px;
+    display: flex;
+    flex-direction: row;
+  }
+  .sc-share {
+    display: block;
+    background: var(--sc-primary-color);
+    color: var(--sc-font-color);
     width: 50px;
     height: 50px;
     text-align: center;
@@ -305,11 +319,12 @@ export default defineComponent({
     &:hover {
       box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
     }
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
     .material-icons {
       font-size: 30px;
       line-height: 50px;
-      position: relative;
-      left: -2px;
     }
   }
   .chart-image-cover {

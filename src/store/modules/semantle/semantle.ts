@@ -3,10 +3,14 @@ import { Module } from 'vuex';
 import { SemantleState } from './semantle.interfaces';
 
 export const SemantleStoreState: () => SemantleState = () => ({
-  semantles: [],
+  lines: [],
 });
 
-export const SemantleStoreMutations = {};
+export const SemantleStoreMutations = {
+  setLines(state: SemantleState, payload: SemantleState['lines']) {
+    state.lines = payload;
+  },
+};
 
 export const SemantleStoreActions = {};
 

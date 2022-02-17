@@ -5,7 +5,9 @@ import {
   SemantleStoreMutations,
 } from './semantle';
 
-export interface SemantleState {}
+export interface SemantleState {
+  lines: Array<{ score: number; guess: string; number: number; logScore: number }>;
+}
 
 type SemantleNamespace<N extends string> = `semantle/${N}`;
 

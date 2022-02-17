@@ -11,9 +11,11 @@
   "dependencies": {
     "asciichart": "^1.5.25",
     "axios": "^0.21.4",
+    "chart.js": "^3.7.1",
     "clipboard": "^2.0.10",
     "json2mq": "^0.2.0",
     "vue": "^3.2.31",
+    "vue-chart-3": "^3.1.0",
     "vue-router": "^4.0.12",
     "vue-toastification": "^2.0.0-rc.5",
     "vuex": "^4.0.2"

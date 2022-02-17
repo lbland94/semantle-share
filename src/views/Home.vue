@@ -304,6 +304,7 @@ export default defineComponent({
     right: 30px;
     display: flex;
     flex-direction: row;
+    z-index: 2;
   }
   .sc-share {
     display: block;

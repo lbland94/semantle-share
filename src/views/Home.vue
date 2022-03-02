@@ -10,11 +10,10 @@
         type="line"
         :wrapper="false"
         :chart-data="{
-          labels: limitedLines.map((v, i) =>
+          labels: lines.map((v, i) =>
             i === 0 ||
             i === limitedLines.length - 1 ||
-            Math.floor(i / (limitedLines.length / 8)) >
-              (i - 1) / (limitedLines.length / 8)
+            Math.floor(i / (limitedLines.length / 8)) > (i - 1) / (lines.length / 8)
               ? v.number
               : ''
           ),
@@ -24,7 +23,7 @@
               borderColor: 'rgba(0, 0, 220, 1)',
               pointBackgroundColor: 'rgba(0, 0, 0, 0)',
               pointBorderColor: 'rgba(0, 0, 0, 0)',
-              data: limitedLines.map((l) => l.logScore),
+              data: lines.map((l) => l.logScore),
               tension: 0.5,
             },
           ],
@@ -45,13 +44,13 @@
           scales: {
             yScale: {
               position: 'right', // `axis` is determined by the position as `'y'`
-              min: 0,
+              min: -10,
               max: 100,
               ticks: {
-                display: false,
+                display: true,
               },
               grid: {
-                drawOnChartArea: false,
+                drawOnChartArea: true,
                 drawTicks: false,
               },
             },
@@ -159,12 +158,12 @@ export default defineComponent({
       const mappedVals = lineStrings.map((l) => {
         let number = -1;
         let guess = '';
-        let score = -1;
+        let score = -101;
         let logScore = -1;
         try {
           const numberMatch = /(^\d+).*$/.exec(l);
-          const guessMatch = /^\d+\s((?:\w+\s)+)(?:\d|\.)+.*?/.exec(l);
-          const scoreMatch = /^\d+\s(?:\w+\s)+((?:\d|\.)+).*?/.exec(l);
+          const guessMatch = /^\d+\s+((?:\w+\s)+)(?:\d|\.|-)+.*$/.exec(l);
+          const scoreMatch = /^\d+\s+(?:\w+\s)+((?:\d|\.|-)+).*$/.exec(l);
 
           if (numberMatch && numberMatch.length === 2) {
             number = Number(numberMatch[1]);
@@ -188,7 +187,9 @@ export default defineComponent({
       });
       let maxScore = 0;
       return mappedVals
-        .filter((l) => l.guess !== '' && l.score > 0 && l.number > 0)
+        .filter(
+          (l) => l.guess !== '' && l.score >= -100 && l.score <= 100 && l.number > 0
+        )
         .sort((a, b) => a.number - b.number)
         .filter((l) => {
           if (maxScore === 100) {
@@ -211,16 +212,16 @@ export default defineComponent({
     },
     plot(): string {
       return (
-        (this.limitedLines.length &&
+        (this.lines.length &&
           asciichart
             .plot(
               largestTriangleThreeBuckets(
-                this.limitedLines.map((l) => l.score),
+                this.lines.map((l) => l.score),
                 20
               ) as number[],
               { height: 5 }
             )
-            .replace(/^( +)?(\d|\.)+?\s/gm, '')
+            .replace(/^( +)?(\d|\.|-)+?\s/gm, '')
             .replace(/ +$/gm, '')
             .replace(/ /g, '⠀')) ||
         ''

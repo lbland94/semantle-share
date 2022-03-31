@@ -12,8 +12,8 @@
         :chart-data="{
           labels: lines.map((v, i) =>
             i === 0 ||
-            i === limitedLines.length - 1 ||
-            Math.floor(i / (limitedLines.length / 8)) > (i - 1) / (lines.length / 8)
+            i === lines.length - 1 ||
+            Math.floor(i / (lines.length / 8)) > (i - 1) / (lines.length / 8)
               ? v.number
               : ''
           ),
